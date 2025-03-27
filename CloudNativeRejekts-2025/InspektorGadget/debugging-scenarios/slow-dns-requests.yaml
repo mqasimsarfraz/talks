@@ -1,0 +1,11 @@
+apiVersion: 1
+kind: instance-spec
+image: trace_dns:v0.38.1
+name: slow-dns-request
+paramValues:
+  operator.KubeManager.all-namespaces: true
+  # The following parameter is used to filter the DNS requests that are:
+  #   1. Response Only
+  #   2. Responses taking more than 1s
+  # See: https://www.inspektor-gadget.io/docs/latest/spec/operators/filter
+  operator.filter.filter: qr==R,latency_ns_raw>1000000000

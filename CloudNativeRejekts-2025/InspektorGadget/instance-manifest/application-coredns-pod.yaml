@@ -1,0 +1,25 @@
+# Trace DNS requests in demo and kube-system namespaces
+# Gadgets used:
+# - trace_dns (https://www.inspektor-gadget.io/docs/latest/gadgets/trace_dns)
+apiVersion: 1
+kind: instance-spec
+image: trace_dns:v0.38.1
+name: application-coredns-pod
+paramValues:
+  # The following parameter is used to trace DNS requests in the default namespace
+  # See: https://www.inspektor-gadget.io/docs/latest/spec/operators/kubemanager
+  operator.KubeManager.namespace: demo,kube-system
+  # The following parameter is used to filter the DNS requests that are:
+  #   1. IPv4 requests
+  #   2. Domain name is example.com
+  # See: https://www.inspektor-gadget.io/docs/latest/spec/operators/filter
+  operator.filter.filter: k8s.podName~mypod|coredns-*,qtype==A,name==example.com.
+  # The following parameter is used to display the following fields in the output:
+  #   1. Name of the pod
+  #   2. Source endpoint of the DNS request
+  #   3. Destination endpoint of the DNS request
+  #   4. Name in the DNS request
+  #   5. Query type of the DNS request
+  #   6. ID of the DNS request
+  #   7. Response code of the DNS request
+  operator.cli.fields: k8s.podname,src,dst,name,qr,id,rcode

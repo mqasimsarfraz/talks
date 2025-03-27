@@ -1,0 +1,12 @@
+apiVersion: 1
+kind: instance-spec
+image: trace_dns:v0.38.1
+name: upstream-dns-server
+paramValues:
+  operator.KubeManager.all-namespaces: true
+  # The following parameter is used to filter the DNS requests that are:
+  #   1. Response Only
+  #   2. Responses from the upstream DNS server (192.168.49.1)
+  # See: https://www.inspektor-gadget.io/docs/latest/spec/operators/filter
+  operator.filter.filter: k8s.podName~coredns-*,qr==R,src.addr==192.168.49.1
+  operator.cli.fields: k8s.podname,src,dst,name,qr,id,rcode
