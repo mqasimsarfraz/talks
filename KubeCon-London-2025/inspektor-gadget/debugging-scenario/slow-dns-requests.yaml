@@ -1,0 +1,7 @@
+apiVersion: 1
+kind: instance-spec
+image: trace_dns:v0.38.1
+name: slow-dns-request
+paramValues:
+  operator.KubeManager.all-namespaces: true
+  operator.filter.filter: qr==R,latency_ns_raw>1000000000
